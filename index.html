@@ -3,15 +3,119 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>El Intruso</title>
+    <title>El Impostor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+
+      :root {
+        --bg-dark: #0f172a;
+        --primary: #7c3aed;           /* Violeta principal */
+        --primary-glow: rgba(124, 58, 237, 0.5);
+        --accent: #06b6d4;            /* Cian para elementos especiales */
+        --card-bg: rgba(30, 41, 59, 0.7);
+        --text-main: #f8fafc;
+        --text-dim: #94a3b8;
+      }
+
       body {
         font-family: 'Inter', sans-serif;
-        background-color: #0f172a;
-        color: #f8fafc;
+        background-color: var(--bg-dark);
+        color: var(--text-main);
       }
+
+      /* Card selection style */
+      .card-select {
+        background: var(--card-bg);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: border 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+      }
+
+      .card-select.active {
+        border: 2px solid var(--primary);
+        box-shadow: 0 0 15px var(--primary-glow);
+      }
+
+      /* Secret word neon glow */
+      .word-neon {
+        font-family: 'Inter', monospace;
+        font-weight: 800;
+        font-size: 3rem;
+        text-shadow: 0 0 8px rgba(124, 58, 237, 0.8), 0 0 20px rgba(124, 58, 237, 0.4);
+        line-height: 1.1;
+      }
+
+      /* Pulse animation for reveal icon */
+      @keyframes pulse-scale {
+        0%, 100% { transform: scale(1.0); }
+        50%       { transform: scale(1.05); }
+      }
+
+      .animate-pulse-scale {
+        animation: pulse-scale 2s ease-in-out infinite;
+      }
+
+      /* Primary action button */
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary), #4c1d95);
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        color: var(--text-main);
+        transition: opacity 0.2s ease, transform 0.15s ease;
+      }
+
+      .btn-primary:active {
+        transform: scale(0.98);
+      }
+
+      .btn-primary:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      /* Footer */
+      .site-footer {
+        width: 100%;
+        max-width: 32rem;
+        margin: 0 auto;
+        padding: 1.25rem 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        border-top: 1px solid rgba(255,255,255,0.08);
+      }
+
+      .footer-brand {
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .footer-link {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 0.75rem;
+        color: var(--text-dim);
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      .footer-link:hover {
+        color: var(--accent);
+      }
+
       /* Prevent text selection during pass-and-play to avoid accidental reveals */
       .no-select {
         -webkit-user-select: none;

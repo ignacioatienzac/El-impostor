@@ -48,16 +48,18 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         {!isRevealed ? (
           <button 
             onClick={handleReveal}
-            className="w-full aspect-[4/3] bg-slate-800/50 border-2 border-dashed border-slate-600 rounded-2xl flex flex-col items-center justify-center gap-4 hover:bg-slate-800 hover:border-indigo-500/50 transition-all group cursor-pointer"
+            className="w-full aspect-[4/3] bg-slate-800/50 border-2 border-dashed border-slate-600 rounded-2xl flex flex-col items-center justify-center gap-4 hover:bg-slate-800 hover:border-violet-500/50 transition-all group cursor-pointer"
           >
-            <Eye className="w-12 h-12 text-slate-500 group-hover:text-indigo-400 transition-colors" />
+            <div className="animate-pulse-scale">
+              <Eye className="w-12 h-12 transition-opacity opacity-60 group-hover:opacity-100" style={{ color: 'var(--accent)' }} />
+            </div>
             <span className="text-slate-400 font-semibold group-hover:text-slate-200">Toca para ver tu palabra</span>
           </button>
         ) : (
           <div className="w-full aspect-[4/3] bg-white rounded-2xl flex flex-col items-center justify-center gap-2 shadow-2xl relative overflow-hidden animate-flip-in">
             <div className="absolute top-0 w-full h-2 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
             <p className="text-slate-500 text-sm font-semibold uppercase tracking-widest mb-2">Tu palabra secreta</p>
-            <h3 className="text-4xl md:text-5xl font-black text-slate-900 text-center px-4 leading-tight break-words">
+            <h3 className="word-neon text-center px-4 break-words" style={{ color: '#1e1b4b' }}>
               {player.word}
             </h3>
             <div className="absolute bottom-4 right-4 opacity-10">

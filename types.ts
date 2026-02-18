@@ -3,6 +3,11 @@ export enum GameMode {
   NO_SIMILAR = 'NO_SIMILAR'
 }
 
+export enum WordSource {
+  PRESET = 'PRESET',
+  CUSTOM = 'CUSTOM'
+}
+
 export enum GamePhase {
   SETUP = 'SETUP',
   PLAYING = 'PLAYING',

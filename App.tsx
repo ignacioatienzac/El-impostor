@@ -2,8 +2,23 @@ import React, { useState } from 'react';
 import { SetupScreen } from './components/SetupScreen';
 import { GameScreen } from './components/GameScreen';
 import { SummaryScreen } from './components/SummaryScreen';
-import { GameMode, GamePhase, GameState, Player, WordPair } from './types';
+import { GameMode, GamePhase, GameState, Player, WordPair, WordSource } from './types';
 import { VOCABULARY } from './constants';
+
+/** Fisher-Yates shuffle — returns a new shuffled array */
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/** Pick one random element from an array using Fisher-Yates derived index */
+function pickRandom<T>(arr: T[]): T {
+  return shuffle(arr)[0];
+}
 
 const App: React.FC = () => {
   const [gameState, setGameState] = useState<GameState>({
@@ -15,16 +30,23 @@ const App: React.FC = () => {
     startingPlayerIndex: 0
   });
 
-  const startGame = (names: string[], mode: GameMode) => {
-    // 1. Select a random word pair
-    const randomPairIndex = Math.floor(Math.random() * VOCABULARY.length);
-    const selectedPair = VOCABULARY[randomPairIndex];
+  const startGame = (names: string[], mode: GameMode, wordSource: WordSource, customWords?: { group: string; impostor: string }) => {
+    // 1. Select or use word pair
+    let selectedPair: WordPair;
 
-    // 2. Select a random impostor
-    const impostorIndex = Math.floor(Math.random() * names.length);
+    if (wordSource === WordSource.CUSTOM && customWords) {
+      selectedPair = { group: customWords.group, impostor: customWords.impostor };
+    } else {
+      // Shuffle the full vocabulary and pick the first entry
+      selectedPair = pickRandom(VOCABULARY);
+    }
 
-    // 3. Select a random starting player
-    const startIndex = Math.floor(Math.random() * names.length);
+    // 2. Shuffle all player indices and pick the first as impostor
+    const shuffledIndices = shuffle(names.map((_, i) => i));
+    const impostorIndex = shuffledIndices[0];
+
+    // 3. Pick a random starting player (different shuffle pass)
+    const startIndex = shuffle(names.map((_, i) => i))[0];
 
     // 4. Create player objects with assigned words
     const newPlayers: Player[] = names.map((name, index) => {
@@ -37,8 +59,8 @@ const App: React.FC = () => {
         // if the vocabulary list has a predictable order. But usually Group vs Impostor is enough.
         assignedWord = isImpostor ? selectedPair.impostor : selectedPair.group;
       } else {
-        // In NO_SIMILAR mode: Impostor gets "INTRUSO", others get 'group' word
-        assignedWord = isImpostor ? 'INTRUSO' : selectedPair.group;
+        // In NO_SIMILAR mode: Impostor gets "IMPOSTOR", others get 'group' word
+        assignedWord = isImpostor ? 'IMPOSTOR' : selectedPair.group;
       }
 
       return {
@@ -108,6 +130,26 @@ const App: React.FC = () => {
           />
         )}
       </main>
+
+      <footer className="site-footer">
+        <span className="footer-brand">SpanishwithIgnacio</span>
+        <div className="footer-links">
+          <a
+            href="https://www.instagram.com/ignacio_recursosele/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-link"
+            aria-label="Instagram"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+              <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+            </svg>
+            @ignacio_recursosele
+          </a>
+        </div>
+      </footer>
     </div>
   );
 };
