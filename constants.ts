@@ -19,7 +19,21 @@ export const VOCABULARY: WordPair[] = [
   { group: "Cervantes", impostor: "Shakespeare" },
   { group: "Mickey Mouse", impostor: "Bugs Bunny" },
   { group: "Frida Kahlo", impostor: "Dalí" },
-  { group: "Spiderman", impostor: "Batman" }
+  { group: "Spiderman", impostor: "Batman" },
+  { group: "Madrid", impostor: "Barcelona" },
+  { group: "Playa", impostor: "Piscina" },
+  { group: "Vino", impostor: "Cerveza" },
+  { group: "Salsa", impostor: "Bachata" },
+  { group: "Invierno", impostor: "Verano" },
+  { group: "Siesta", impostor: "Dormir" },
+  { group: "Real Madrid", impostor: "FC Barcelona" },
+  { group: "Metro", impostor: "Autobús" },
+  { group: "Cine", impostor: "Teatro" },
+  { group: "Supermercado", impostor: "Mercado" },
+  { group: "Smartphone", impostor: "Tablet" },
+  { group: "Ascensor", impostor: "Escaleras" },
+  { group: "Periódico", impostor: "Revista" },
+  { group: "Bad Bunny", impostor: "Luis Fonsi" },
 ];
 
 export const MIN_PLAYERS = 3;
