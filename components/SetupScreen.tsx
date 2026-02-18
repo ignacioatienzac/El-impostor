@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import { GameMode, WordSource } from '../types';
 import { Button } from './Button';
-import { MIN_PLAYERS, MAX_PLAYERS, VOCABULARY } from '../constants';
-import { UserPlus, UserMinus, ShieldAlert, Shield, BookOpen, Edit3, List, X } from 'lucide-react';
+import { MIN_PLAYERS, MAX_PLAYERS } from '../constants';
+import { UserPlus, UserMinus, ShieldAlert, Shield, BookOpen, Edit3, List } from 'lucide-react';
 
 interface SetupScreenProps {
   onStartGame: (names: string[], mode: GameMode, wordSource: WordSource, customWords?: { group: string; impostor: string }) => void;
+  onShowWordList: () => void;
 }
 
-export const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame }) => {
+export const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame, onShowWordList }) => {
   const [playerCount, setPlayerCount] = useState<number>(MIN_PLAYERS);
   const [names, setNames] = useState<string[]>(Array(MIN_PLAYERS).fill(''));
   const [mode, setMode] = useState<GameMode>(GameMode.SIMILAR);
   const [wordSource, setWordSource] = useState<WordSource>(WordSource.PRESET);
   const [customGroupWord, setCustomGroupWord] = useState<string>('');
   const [customImpostorWord, setCustomImpostorWord] = useState<string>('');
-  const [showWordList, setShowWordList] = useState<boolean>(false);
 
   const handlePlayerCountChange = (delta: number) => {
     const newCount = Math.max(MIN_PLAYERS, Math.min(MAX_PLAYERS, playerCount + delta));
@@ -54,46 +54,12 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onStartGame }) => {
   return (
     <div className="w-full max-w-md mx-auto p-4 flex flex-col gap-6 animate-fade-in">
 
-      {/* Word List Modal */}
-      {showWordList && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)' }}
-          onClick={() => setShowWordList(false)}
-        >
-          <div
-            className="w-full max-w-md rounded-2xl overflow-hidden flex flex-col"
-            style={{ background: 'var(--card-bg)', border: '1px solid rgba(255,255,255,0.1)', maxHeight: '80vh' }}
-            onClick={e => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between px-5 py-4 flex-shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-              <h2 className="font-bold text-white text-lg">Todas las palabras ({VOCABULARY.length})</h2>
-              <button onClick={() => setShowWordList(false)} className="text-slate-400 hover:text-white transition-colors">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="overflow-y-auto flex-1 px-5 py-3">
-              <div className="grid grid-cols-2 gap-x-3 mb-2 py-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-                <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent)' }}>Mayoría</span>
-                <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--primary)' }}>Impostor</span>
-              </div>
-              {VOCABULARY.map((pair, i) => (
-                <div key={i} className="grid grid-cols-2 gap-x-3 py-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <span className="text-sm text-slate-200">{pair.group}</span>
-                  <span className="text-sm" style={{ color: 'var(--text-dim)' }}>{pair.impostor}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
       <div className="text-center mb-4">
         <h1 style={{ fontWeight: 800, letterSpacing: '-0.05em', background: 'linear-gradient(90deg, var(--primary), var(--accent))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }} className="text-4xl mb-3">
           El Impostor
         </h1>
         <button
-          onClick={() => setShowWordList(true)}
+          onClick={onShowWordList}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all"
           style={{ background: 'rgba(124,58,237,0.15)', border: '1px solid rgba(124,58,237,0.4)', color: 'var(--accent)' }}
         >

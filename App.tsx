@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { SetupScreen } from './components/SetupScreen';
 import { GameScreen } from './components/GameScreen';
 import { SummaryScreen } from './components/SummaryScreen';
 import { GameMode, GamePhase, GameState, Player, WordPair, WordSource } from './types';
 import { VOCABULARY } from './constants';
+import { X } from 'lucide-react';
 
 /** Fisher-Yates shuffle — returns a new shuffled array */
 function shuffle<T>(arr: T[]): T[] {
@@ -21,6 +23,7 @@ function pickRandom<T>(arr: T[]): T {
 }
 
 const App: React.FC = () => {
+  const [showWordList, setShowWordList] = useState(false);
   const [gameState, setGameState] = useState<GameState>({
     phase: GamePhase.SETUP,
     mode: GameMode.SIMILAR,
@@ -109,9 +112,53 @@ const App: React.FC = () => {
         <div className="absolute top-[40%] -right-[10%] w-[40%] h-[40%] bg-purple-900/20 rounded-full blur-3xl"></div>
       </div>
 
+      {/* Word List Modal — rendered via portal directly on body to escape any stacking context */}
+      {showWordList && createPortal(
+        <div
+          onClick={() => setShowWordList(false)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 9999,
+            background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(4px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem'
+          }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              width: '100%', maxWidth: '28rem',
+              background: 'var(--card-bg)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: '1rem',
+              display: 'flex', flexDirection: 'column',
+              height: '80vh'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 1.25rem', borderBottom: '1px solid rgba(255,255,255,0.08)', flexShrink: 0 }}>
+              <h2 style={{ fontWeight: 700, color: '#fff', fontSize: '1.1rem' }}>Todas las palabras ({VOCABULARY.length})</h2>
+              <button onClick={() => setShowWordList(false)} style={{ color: '#94a3b8', lineHeight: 1 }}>
+                <X size={20} />
+              </button>
+            </div>
+            <div style={{ overflowY: 'auto', flex: 1, padding: '0.75rem 1.25rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 0.75rem', padding: '0.5rem 0', borderBottom: '1px solid rgba(255,255,255,0.08)', marginBottom: '0.25rem' }}>
+                <span style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--accent)' }}>Mayoría</span>
+                <span style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--primary)' }}>Impostor</span>
+              </div>
+              {VOCABULARY.map((pair, i) => (
+                <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 0.75rem', padding: '0.5rem 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <span style={{ fontSize: '0.875rem', color: '#e2e8f0' }}>{pair.group}</span>
+                  <span style={{ fontSize: '0.875rem', color: 'var(--text-dim)' }}>{pair.impostor}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
       <main className="w-full max-w-lg min-h-screen flex flex-col">
         {gameState.phase === GamePhase.SETUP && (
-          <SetupScreen onStartGame={startGame} />
+          <SetupScreen onStartGame={startGame} onShowWordList={() => setShowWordList(true)} />
         )}
 
         {gameState.phase === GamePhase.PLAYING && gameState.players.length > 0 && (
